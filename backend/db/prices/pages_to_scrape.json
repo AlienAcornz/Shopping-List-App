@@ -1,0 +1,55 @@
+{
+    "fresh-produce": [
+        "https://www.aldi.co.uk/products/fresh-food/vegetables/k/1588161416978050002",
+        "https://www.aldi.co.uk/products/fresh-food/fruit/k/1588161416978050001",
+        "https://www.aldi.co.uk/products/fresh-food/stir-fry-vegetables-sauce-noodles/k/1588161416978050003"
+        ],
+    "dairy" : [
+            "https://www.aldi.co.uk/products/chilled-food/milk/k/1588161416978051001",
+            "https://www.aldi.co.uk/products/chilled-food/dairy/k/1588161416978051002",
+            "https://www.aldi.co.uk/products/chilled-food/cheese/k/1588161416978051004",
+            "https://www.aldi.co.uk/products/chilled-food/yoghurts/k/1588161416978051005"
+        ],
+    "meat-and-seafood": [
+        "https://www.aldi.co.uk/products/fresh-food/poultry/k/1588161416978050004",
+        "https://www.aldi.co.uk/products/fresh-food/beef/k/1588161416978050005",
+        "https://www.aldi.co.uk/products/fresh-food/pork-gammon/k/1588161416978050006",
+        "https://www.aldi.co.uk/products/fresh-food/bacon-sausages/k/1588161416978050007",
+        "https://www.aldi.co.uk/products/fresh-food/lamb/k/1588161416978050008",
+        "https://www.aldi.co.uk/products/fresh-food/game-venison/k/1588161416978050009",
+        "https://www.aldi.co.uk/products/fresh-food/black-pudding-haggis-stuffing/k/1588161416978050010",
+        "https://www.aldi.co.uk/products/fresh-food/fish/k/1588161416978050011",
+        "https://www.aldi.co.uk/products/fresh-food/seafood-prawns/k/1588161416978050012",
+        "https://www.aldi.co.uk/products/fresh-food/breaded-fish-fishcakes/k/1588161416978050013"
+    ],
+    "bakery": [
+        "https://www.aldi.co.uk/products/bakery/k/1588161416978049"
+    ],
+    "frozen" : [
+        "https://www.aldi.co.uk/products/frozen-food/k/1588161416978056"
+    ],
+    "ambient": [
+        "https://www.aldi.co.uk/products/food-cupboard/k/1588161416978053"
+    ],
+    "chilled": [
+        "https://www.aldi.co.uk/products/chilled-food/eggs/k/1588161416978051003",
+        "https://www.aldi.co.uk/products/chilled-food/chilled-desserts/k/1588161416978051006",
+        "https://www.aldi.co.uk/products/chilled-food/ready-meals/k/1588161416978051007",
+        "https://www.aldi.co.uk/products/chilled-food/pizza-pasta-garlic-bread/k/1588161416978051008",
+        "https://www.aldi.co.uk/products/chilled-food/sides-starters/k/1588161416978051009",
+        "https://www.aldi.co.uk/products/chilled-food/soups/k/1588161416978051010",
+        "https://www.aldi.co.uk/products/chilled-food/chilled-meats/k/1588161416978051011",
+        "https://www.aldi.co.uk/products/chilled-food/party-food-pies-salads/k/1588161416978051012",
+        "https://www.aldi.co.uk/products/chilled-food/food-to-go/k/1588161416978051013",
+        "https://www.aldi.co.uk/products/chilled-food/meat-substitutes/k/1588161421695436"
+    ],
+    "alcohol": [
+        "https://www.aldi.co.uk/products/alcohol/k/1588161416978055"
+    ],
+    "drinks" : [
+        "https://www.aldi.co.uk/products/drinks/k/1588161416978054"
+    ],
+    "vegetarian": [
+        "https://www.aldi.co.uk/products/vegetarian-plant-based/k/1588161421881163"
+    ]
+}
