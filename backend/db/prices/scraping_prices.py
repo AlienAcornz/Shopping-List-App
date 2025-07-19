@@ -5,26 +5,23 @@ import pandas as pd
 import time
 from pathlib import Path
 import json
-from pymongo import MongoClient
+from mongo_client import appendPrices
+import asyncio
 
 parentDir = Path(__file__).parent
 
 pagesToScrape = parentDir / "pages_to_scrape.json"
 with open(pagesToScrape, 'r') as f:
-    pages = json.load(f)
+    pages = json.load(f) #loads the websites that we want to scrape from a json filled with links
 
 driverPath = parentDir / "chromedriver.exe"
 
 service = Service(executable_path=driverPath)
 driver = webdriver.Chrome(service=service)
 
-mongo_client = MongoClient("mongodb://localhost:27017/")
-mongo_database = mongo_client["shoppingdb"]
-mongo_collection = mongo_database["prices"]
-
 
 for category, links in pages.items():
-    price_dataframe = pd.DataFrame(columns=["name", "price", "unit", "category"])
+    price_dataframe = pd.DataFrame(columns=["name", "price", "unit", "category"]) # creates a dataframe for the info to be stored in
     for link in links:
         running = True
         index = 1
@@ -51,6 +48,6 @@ for category, links in pages.items():
                     continue
             
             index += 1
-    mongo_collection.insert_many(price_dataframe.to_dict(orient="records"))
+    asyncio.run(appendPrices(price_dataframe.to_dict(orient="records")))
     print(category, "Has been added to the database")
     print(price_dataframe.head())
