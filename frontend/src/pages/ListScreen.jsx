@@ -1,11 +1,12 @@
 import { useParams } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import backIcon from "../assets/arrow_forward.svg";
 import "../css/ListScreen.css";
 import shareIcon from "../assets/share.svg";
 import ShoppingItemCard from "../components/ShoppingItemCard";
 import AddNewItemForm from "../components/AddNewItemForm";
+import { getPrice } from "../../services/api";
 
 import { Link } from "react-router-dom";
 
@@ -24,7 +25,7 @@ function ListScreen() {
       name: "Weekly Shop",
       token: "0",
       list: [
-        { id: 0, name: "Milk", quantity: 1, unit: "litre", isCompleted: false },
+        { id: 0, name: "banana", quantity: 1, unit: "litre", isCompleted: false },
         { id: 1, name: "Eggs", quantity: 6, unit: "each", isCompleted: true },
       ],
     },
@@ -49,13 +50,49 @@ function ListScreen() {
   ]);
 
   const list = lists.find((l) => l.id === numericId);
+  const listId = lists.findIndex((l) => l.id === numericId);
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      list.list.forEach(async (item) => {
+        const response = await getPrice(item.name);
+        const price = response.price;
+        const unit = response.unit;
+
+        console.log(price, unit); 
+
+        const newList = [...lists];
+        if (listId !== -1) {
+          const itemId = newList[listId].list.findIndex(i => i.name === item.name)
+          
+          if (itemId !== -1) {
+            const updatedItem = {
+              ...newList[listId].list[itemId],
+              price: price,
+              unit: unit
+            }
+
+            const updatedItems = [...newList[listId].list]
+            updatedItems[itemId] = updatedItem
+
+            newList[listId] = {
+              ...newList[listId],
+              list: updatedItems
+            }
+
+            setLists(newList)
+          }
+        }
+      });
+    };
+    fetchPrices();
+  }, []);
 
   function handleAddItem(e) {
     const newList = [...lists];
-    const listIndex = lists.findIndex((l) => l.id === numericId);
-    if (listIndex !== -1) {
-      newList[listIndex].list.push({
-        id: newList[listIndex].list.length - 1,
+    if (listId !== -1) {
+      newList[listId].list.push({
+        id: newList[listId].list.length - 1,
         name: e.name,
         quantity: parseInt(e.quantity),
         unit: e.unit,
@@ -114,7 +151,7 @@ function ListScreen() {
             ( !item.isCompleted || showHiddenItems ) && <ShoppingItemCard Item={item} key={item.id} onToggleCompleted={(i) => toggleCompleted(i)}/>
           ))}
         </div>
-        <div className="newItemButton" onClick={() => setShowNewItem}>
+        <div className="newItemButton" onClick={() => setShowNewItem(true)}>
           {showNewItem ? (
             <AddNewItemForm onSubmit={handleAddItem} />
           ) : (

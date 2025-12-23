@@ -21,10 +21,31 @@ export async function shareList({list}) {
 
     const payload = removeIds(list)
 
-    const response = await fetch((`${BASE_URL}/create`), {
-        method: "POST",
-        body: JSON.stringify(payload)
-    })
+    try {
+        const response = await fetch((`${BASE_URL}/create`), {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
 
-    return await response.json()
+        return await response.json()
+    } catch (error) {
+        console.error("ERROR sharing list", error)
+    }
+}
+
+export async function getPrice(item) {
+    console.log("Fetching price of", item)
+    try {
+        const response = await fetch(`${BASE_URL}/price/${item}`)
+
+        if (response.status === 404) { // if the item is not in the databse
+            console.warn(`No price found for ${item}`)
+            return false
+        }
+
+        return await response.json()
+    } catch (error) {
+        console.error("ERROR Fetching Price", error)
+    }
+
 }

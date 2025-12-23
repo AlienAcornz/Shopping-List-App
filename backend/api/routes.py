@@ -1,7 +1,15 @@
 from fastapi import FastAPI, HTTPException
 from ..db.mongo_client import get_price, insert_list, get_list, insert_item, remove_item
 from .schemas import Item, PriceResponse, ShoppingList, TokenResponse, LocalShoppingList
+from fastapi.middleware.cors import CORSMiddleware
 api = FastAPI()
+
+api.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @api.get('/price/{item}', response_model=PriceResponse)
 async def get_item(item: str):
@@ -38,7 +46,7 @@ async def add_item_to_list(token: str, item: Item):
     Adds an item to a list given the token
     """
     result = await insert_item(token, item)
-    if result.modified_count == 0:
+    if not result or result.modified_count == 0:
         raise HTTPException(404, "List not found.")
     return {"status": "item added"}
 
@@ -48,6 +56,6 @@ async def remove_item_from_list(token: str, item: Item):
     Removes an item from a list given the token
     """
     result = await remove_item(token, item)
-    if result.modified_count == 0:
+    if not result or result.modified_count == 0:
         raise HTTPException(404, "List not found.")
     return {"status": "item removed"}

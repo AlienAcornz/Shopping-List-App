@@ -1,6 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 import secrets
-from ..api.schemas import Item, ShoppingList
+from ..api.schemas import Item, LocalShoppingList
 
 client = AsyncIOMotorClient("mongodb://localhost:27017")
 db = client["shoppingdb"]
@@ -13,7 +13,7 @@ async def append_prices(data: dict):
     """
     await price_collection.insert_many(data)
 
-async def get_price(name: str) -> dict:
+async def get_price(name: str):
     """
     returns the name, price, unit, category of an item.
     May be later updated to take the quantity as an input
@@ -21,7 +21,7 @@ async def get_price(name: str) -> dict:
     return await price_collection.find_one({"name": name},{"_id": 0})
 
 
-async def insert_list(data: ShoppingList):
+async def insert_list(data: LocalShoppingList):
     """
     Adds a list to the list collection
     """
