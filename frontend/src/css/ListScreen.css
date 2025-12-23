@@ -1,0 +1,20 @@
+.navigationBar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 0px, 12px;
+}
+
+.background {
+    background-color: #E8EDE6;
+}
+
+.newItemButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    margin-left: 16px;
+}

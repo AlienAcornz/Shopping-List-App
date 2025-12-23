@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+
+
+.listCard {
+    background-color: #E8EDE6;
+    border-radius: 16px;
+    margin: 16px;
+    padding-right: 24px;
+    padding-left: 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.listCard:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}

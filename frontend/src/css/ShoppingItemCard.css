@@ -1,0 +1,18 @@
+.itemCard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    background-color: #E8EDE6;
+    padding: 0px 12px;
+
+    justify-content: space-between;
+}
+
+.itemInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}

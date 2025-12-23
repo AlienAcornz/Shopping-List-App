@@ -1,0 +1,98 @@
+.newListButton {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 64px;
+    height: 64px;
+    background-color: #B5C5AF;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+}
+
+.newListButton:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.newListDiv {
+    position: fixed;
+    width: 336px;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #CDD8C9;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    padding: 24px;
+    gap: 20px;
+}
+
+.popupModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.panel {
+    width: 100%;
+    background-color: #E8EDE6;
+    display: flex;
+    align-items: center;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.panel input[type="text"] {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    color: #1A3410;
+    flex: 1;
+}
+
+.finishButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.cancel {
+    cursor: pointer;
+    background-color: #A6C29C;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 16px;
+    gap: 8px;
+}
+
+.submit {
+    cursor: pointer;
+    background-color: #659552;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 16px;
+    gap: 8px;
+}
