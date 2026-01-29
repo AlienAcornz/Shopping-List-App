@@ -46,7 +46,7 @@ async def insert_item(token: str, item: Item):
     """
     Adds an item to a list given a token
     """
-    await list_collection.update_one(
+    return await list_collection.update_one(
         {"token": token},
         {"$push": {"list": item.model_dump()}}
     )
@@ -55,7 +55,7 @@ async def remove_item(token: str, item: Item):
     """
     removes an item in a list given a token
     """
-    await list_collection.update_one(
+    return await list_collection.update_one(
         {"token": token},
         {"$pull": {"list" : {"name": item.name, "quantity": item.quantity, "unit": item.unit}}}
     )

@@ -10,7 +10,7 @@ import { getPrice } from "../../services/api";
 
 import { Link } from "react-router-dom";
 
-function ListScreen() {
+function ListScreen({lists, setLists}) {
   const { id } = useParams();
   const numericId = parseInt(id, 10);
 
@@ -18,74 +18,48 @@ function ListScreen() {
 
   const [showHiddenItems, setShowHiddenItems] = useState(true);
 
-  const [lists, setLists] = useState([
-    
-    {
-      id: 0,
-      name: "Weekly Shop",
-      token: "0",
-      list: [
-        { id: 0, name: "banana", quantity: 1, unit: "litre", isCompleted: false },
-        { id: 1, name: "Eggs", quantity: 6, unit: "each", isCompleted: true },
-      ],
-    },
-    {
-      id: 1,
-      name: "Shared list",
-      token: "THISISAFAKETOKEN",
-      list: [
-        { id: 0, name: "Cheese", quantity: 7, unit: "kg", isCompleted: false  },
-        { id: 1, name: "Bread", quantity: 2, unit: "kg", isCompleted: false  },
-      ],
-    },
-    {
-      id: 2,
-      name: "Party food",
-      token: "0",
-      list: [
-        { id: 0, name: "Pizza", quantity: 7, unit: "each", isCompleted: false  },
-        { id: 1, name: "cucumber", quantity: 2, unit: "kg", isCompleted: false  },
-      ],
-    },
-  ]);
-
   const list = lists.find((l) => l.id === numericId);
   const listId = lists.findIndex((l) => l.id === numericId);
 
-  useEffect(() => {
-    const fetchPrices = async () => {
-      list.list.forEach(async (item) => {
-        const response = await getPrice(item.name);
-        const price = response.price;
-        const unit = response.unit;
+  const fetchPrices = async () => {
+    list.list.forEach(async (item) => {
+      const response = await getPrice(item.name);
+      const price = response.price;
+      const unit = response.unit;
 
-        console.log(price, unit); 
+      console.log(price, unit);
 
-        const newList = [...lists];
-        if (listId !== -1) {
-          const itemId = newList[listId].list.findIndex(i => i.name === item.name)
-          
-          if (itemId !== -1) {
-            const updatedItem = {
-              ...newList[listId].list[itemId],
-              price: price,
-              unit: unit
-            }
+      const newList = [...lists];
+      if (listId !== -1) {
+        const itemId = newList[listId].list.findIndex(
+          (i) => i.name === item.name
+        );
 
-            const updatedItems = [...newList[listId].list]
-            updatedItems[itemId] = updatedItem
+        if (itemId !== -1) {
+          const updatedItem = {
+            ...newList[listId].list[itemId],
+            price: price,
+            unit: unit,
+          };
 
-            newList[listId] = {
-              ...newList[listId],
-              list: updatedItems
-            }
+          const updatedItems = [...newList[listId].list];
+          updatedItems[itemId] = updatedItem;
 
-            setLists(newList)
-          }
+          newList[listId] = {
+            ...newList[listId],
+            list: updatedItems,
+          };
+
+          setLists(newList);
         }
-      });
-    };
-    fetchPrices();
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (!showNewItem && lists.length !== 0) {
+      fetchPrices();
+    }
   }, []);
 
   function handleAddItem(e) {
@@ -100,23 +74,24 @@ function ListScreen() {
       });
       setLists(newList);
       setShowNewItem(false);
+      fetchPrices();
     } else {
       console.log("List not found");
     }
   }
 
   const toggleHiddenItems = () => {
-    setShowHiddenItems(!showHiddenItems)
-  }
+    setShowHiddenItems(!showHiddenItems);
+  };
 
   const toggleCompleted = (item) => {
-      item.isCompleted = !item.isCompleted
-      setLists(
-        lists.map((l) =>
-          l.id === numericId ? {...l, list: [...l.list] } : l, // updates the list to hold the isCompleted value
-        ),
+    item.isCompleted = !item.isCompleted;
+    setLists(
+      lists.map(
+        (l) => (l.id === numericId ? { ...l, list: [...l.list] } : l) // updates the list to hold the isCompleted value
       )
-  }
+    );
+  };
 
   if (!list) return <p>List not found</p>;
 
@@ -132,7 +107,7 @@ function ListScreen() {
         </Link>
 
         <p>{list.name}</p>
-        <img src={shareIcon} alt="Share the list" />
+        <img src={shareIcon} alt="Share the list" onClick={() => console.log(list)} />
       </div>
       <div className="background">
         <div>
@@ -147,15 +122,22 @@ function ListScreen() {
           </p>
         </div>
         <div>
-          {list.list.map((item) => (
-            ( !item.isCompleted || showHiddenItems ) && <ShoppingItemCard Item={item} key={item.id} onToggleCompleted={(i) => toggleCompleted(i)}/>
-          ))}
+          {list.list.map(
+            (item) =>
+              (!item.isCompleted || showHiddenItems) && (
+                <ShoppingItemCard
+                  Item={item}
+                  key={item.id}
+                  onToggleCompleted={(i) => toggleCompleted(i)}
+                />
+              )
+          )}
         </div>
         <div className="newItemButton" onClick={() => setShowNewItem(true)}>
           {showNewItem ? (
             <AddNewItemForm onSubmit={handleAddItem} />
           ) : (
-            <p style={{cursor: "pointer"}}> + Add Item</p>
+            <p style={{ cursor: "pointer" }}> + Add Item</p>
           )}
         </div>
       </div>

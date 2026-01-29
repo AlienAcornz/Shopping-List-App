@@ -4,13 +4,8 @@ import addIcon from "../assets/add.svg";
 import "../css/ListSelectionScreen.css";
 import ShoppingListCard from "../components/ShoppingListCard";
 
-function ListSelectionScreen() {
+function ListSelectionScreen({lists, setLists}) {
   const [showNewList, setShowNewList] = useState(false);
-  const [lists, setLists] = useState([
-    { id: 0, name: "Weekly Shop", isShared: false },
-    { id: 1, name: "Shared List", isShared: true },
-    { id: 2, name: "Party food", isShared: true },
-  ]);
   const [newName, setNewName] = useState("");
   const [newShared, setNewShared] = useState(false);
 
