@@ -33,10 +33,11 @@ export async function shareList({list}) {
     }
 }
 
-export async function getPrice(item) {
+
+export async function getOldPrice(item) { //DISCONTINUED
     console.log("Fetching price of", item)
     try {
-        const response = await fetch(`${BASE_URL}/price/${item}`)
+        const response = await fetch(`${BASE_URL}/priceold/${item}`)
 
         if (response.status === 404) { // if the item is not in the databse
             console.warn(`No price found for ${item}`)
@@ -48,4 +49,33 @@ export async function getPrice(item) {
         console.error("ERROR Fetching Price", error)
     }
 
+}
+
+
+export async function getPrice(itemName, itemQuantity, itemUnit) {
+  const payload = {
+    name: itemName,
+    quantity: itemQuantity,
+    unit: itemUnit
+  };
+
+  try {
+    const response = await fetch(`${BASE_URL}/price`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      console.error("API error:", response.status);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("ERROR fetching price", error);
+    return null;
+  }
 }

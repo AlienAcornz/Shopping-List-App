@@ -5,7 +5,7 @@ import pandas as pd
 import time
 from pathlib import Path
 import json
-from mongo_client import appendPrices
+import mongo_client
 import asyncio
 
 parentDir = Path(__file__).parent
@@ -48,6 +48,6 @@ for category, links in pages.items():
                     continue
             
             index += 1
-    asyncio.run(appendPrices(price_dataframe.to_dict(orient="records")))
+    asyncio.run(mongo_client.appendPrices(price_dataframe.to_dict(orient="records")))
     print(category, "Has been added to the database")
     print(price_dataframe.head())

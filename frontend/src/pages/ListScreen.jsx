@@ -10,7 +10,7 @@ import { getPrice } from "../../services/api";
 
 import { Link } from "react-router-dom";
 
-function ListScreen({lists, setLists}) {
+function ListScreen({ lists, setLists }) {
   const { id } = useParams();
   const numericId = parseInt(id, 10);
 
@@ -21,63 +21,113 @@ function ListScreen({lists, setLists}) {
   const list = lists.find((l) => l.id === numericId);
   const listId = lists.findIndex((l) => l.id === numericId);
 
+  // 1. Normalization map
+  const unitMap = {
+    gram: "g",
+    grams: "g",
+    g: "g",
+
+    kilogram: "kg",
+    kilograms: "kg",
+    kg: "kg",
+
+    litre: "l",
+    liter: "l",
+    litres: "l",
+    liters: "l",
+    l: "l",
+
+    millilitre: "ml",
+    milliliter: "ml",
+    millilitres: "ml",
+    milliliters: "ml",
+    ml: "ml",
+
+    centilitre: "cl",
+    centiliter: "cl",
+    centilitres: "cl",
+    centiliters: "cl",
+    cl: "cl",
+
+    each: "each",
+  };
+
+  function normalizeUnit(input) {
+    if (!input) return null;
+    const key = input.trim().toLowerCase();
+    return unitMap[key] || null;
+  }
+
+  // 2. Updated fetchPrices
   const fetchPrices = async () => {
-    list.list.forEach(async (item) => {
-      const response = await getPrice(item.name);
-      const price = response.price;
-      const unit = response.unit;
+    if (!list || !list.list || list.list.length === 0) return;
 
-      console.log(price, unit);
+    try {
+      // Fetch all prices in parallel
+      const responses = await Promise.all(
+        list.list.map((item) => {
+          const normalizedUnit = normalizeUnit(item.unit);
 
-      const newList = [...lists];
-      if (listId !== -1) {
-        const itemId = newList[listId].list.findIndex(
-          (i) => i.name === item.name
-        );
+          if (!normalizedUnit) {
+            console.warn("Unknown unit:", item.unit);
+            return null;
+          }
 
-        if (itemId !== -1) {
-          const updatedItem = {
-            ...newList[listId].list[itemId],
-            price: price,
-            unit: unit,
-          };
+          return getPrice(item.name, item.quantity, normalizedUnit);
+        }),
+      );
 
-          const updatedItems = [...newList[listId].list];
-          updatedItems[itemId] = updatedItem;
+      // Create updated items array safely
+      const updatedItems = list.list.map((item, index) => {
+        const response = responses[index];
 
-          newList[listId] = {
-            ...newList[listId],
-            list: updatedItems,
-          };
-
-          setLists(newList);
+        if (!response || !response.price) {
+          return item; // Leave unchanged if API failed
         }
-      }
-    });
+
+        return {
+          ...item,
+          price: response.price * item.quantity,
+          unit: normalizeUnit(item.unit),
+        };
+      });
+
+      // Update state ONCE
+      setLists((prevLists) =>
+        prevLists.map((l) =>
+          l.id === numericId ? { ...l, list: updatedItems } : l,
+        ),
+      );
+    } catch (error) {
+      console.error("Price fetch failed:", error);
+    }
   };
 
   useEffect(() => {
-    if (!showNewItem && lists.length !== 0) {
-      fetchPrices();
-    }
+    fetchPrices();
   }, []);
 
   function handleAddItem(e) {
-    const newList = [...lists];
-    if (listId !== -1) {
-      newList[listId].list.push({
-        id: newList[listId].list.length - 1,
-        name: e.name,
-        quantity: parseInt(e.quantity),
-        unit: e.unit,
-        isCompleted: false,
-      });
-      setLists(newList);
-      setShowNewItem(false);
+    const newItem = {
+      id: Date.now(), // Unique ID (fixes key error)
+      name: e.name,
+      quantity: parseInt(e.quantity),
+      unit: e.unit,
+      isCompleted: false,
+    };
+
+    setLists((prevLists) =>
+      prevLists.map((l) =>
+        l.id === numericId ? { ...l, list: [...l.list, newItem] } : l,
+      ),
+    );
+
+    setShowNewItem(false);
+
+    // Fetch prices AFTER adding
+    setTimeout(() => {
       fetchPrices();
-    } else {
-      console.log("List not found");
-    }
+    }, 0);
   }
 
   const toggleHiddenItems = () => {
@@ -88,8 +138,8 @@ function ListScreen({lists, setLists}) {
     item.isCompleted = !item.isCompleted;
     setLists(
       lists.map(
-        (l) => (l.id === numericId ? { ...l, list: [...l.list] } : l) // updates the list to hold the isCompleted value
-      )
+        (l) => (l.id === numericId ? { ...l, list: [...l.list] } : l), // updates the list to hold the isCompleted value
+      ),
     );
   };
 
@@ -107,7 +157,11 @@ function ListScreen({lists, setLists}) {
         </Link>
 
         <p>{list.name}</p>
-        <img src={shareIcon} alt="Share the list" onClick={() => console.log(list)} />
+        <img
+          src={shareIcon}
+          alt="Share the list"
+          onClick={() => console.log(list)}
+        />
       </div>
       <div className="background">
         <div>
@@ -130,7 +184,7 @@ function ListScreen({lists, setLists}) {
                   key={item.id}
                   onToggleCompleted={(i) => toggleCompleted(i)}
                 />
-              )
+              ),
           )}
         </div>
         <div className="newItemButton" onClick={() => setShowNewItem(true)}>

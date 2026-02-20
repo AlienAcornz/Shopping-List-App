@@ -8,7 +8,7 @@ function ShoppingItemCard({ Item, onToggleCompleted }) {
         <input type="checkbox" checked={Item.isCompleted} onChange={(e) => e.stopPropagation()}/>
         <p>{Item.name} • {Item.quantity} {Item.unit}</p>
       </div>
-      {Item.price ? <p>£{Item.price}</p> : <p>----</p>}
+      {Item.price ? <p>£{Item.price.toFixed(2)}</p> : <p>----</p>}
     </div>
   );
 }

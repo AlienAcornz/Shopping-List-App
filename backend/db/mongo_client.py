@@ -6,6 +6,18 @@ client = AsyncIOMotorClient("mongodb://localhost:27017")
 db = client["shoppingdb"]
 price_collection = db["prices"]
 list_collection = db["lists"]
+optimizedPrices_collection = db["optimizedPrices"]
+
+async def get_db():
+    return await optimizedPrices_collection.find({}).to_list(None)
+
+async def append_optimizedPrices(data: list[dict]):
+    """
+    Used to create the optimized prices collection which includes the price per standardised unit along with a price estimation for every unit.
+    """
+    await optimizedPrices_collection.delete_many({}) # deletes everything
+
+    await optimizedPrices_collection.insert_many(data) #appends new data
 
 async def append_prices(data: dict):
     """
@@ -13,13 +25,20 @@ async def append_prices(data: dict):
     """
     await price_collection.insert_many(data)
 
-async def get_price(name: str):
+async def get_oldprice(name: str):
     """
+    DEPRECIATED
     returns the name, price, unit, category of an item.
     May be later updated to take the quantity as an input
     """
     return await price_collection.find_one({"name": name},{"_id": 0})
 
+async def get_price(name: str):
+    """
+    returns the name, price, unit, category of an item.
+    May be later updated to take the quantity as an input
+    """
+    return await optimizedPrices_collection.find_one({"name": name},{"_id": 0})
 
 async def insert_list(data: LocalShoppingList):
     """

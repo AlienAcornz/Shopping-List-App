@@ -2,12 +2,18 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import pandas as pd
 import asyncio
 from sklearn.feature_extraction.text import TfidfVectorizer
-import numpy as np
+from scipy.sparse import save_npz, load_npz
 from nltk.tokenize import word_tokenize
 from gensim.models.phrases import Phraser
 from gensim.models import Phrases
 import re
 from sklearn.metrics.pairwise import cosine_similarity
+from joblib import dump, load
+import pickle
+from pathlib import Path
+import numpy as np
+from ..mongo_client import append_optimizedPrices, get_db
+
 
 PHASER_THRESHOLD = 1
 SAMPLE_SIZE = 300000
@@ -57,26 +63,106 @@ actual_prices = {
     "vegetable stock cube": 10.30
 }
 
-async def getRandom1000():
-    client = AsyncIOMotorClient("mongodb://localhost:27017")
-    db = client["shoppingdb"]
-    price_collection = db["prices"]
-
-    command = [
-        {"$sample": {"size": SAMPLE_SIZE}} #Finds 1000 random items
-    ]
-
-    #docs = await price_collection.aggregate(pipeline=command).to_list(None) #runs the command on the mongoDB
-    docs = await price_collection.find({}).to_list(None)
-
-
-    return docs
-
 def cleanWords(word):
     return re.sub(r'[^A-Za-z ]', '', word.lower())
 
+async def mergeUnits():
+    __data = pd.DataFrame(await get_db()) #converts the list to a pandas dataframe
+    
+    mask = __data["unit"] == "g" #converts g to kg
+    __data.loc[mask, "unit"] = "kg"
+    __data.loc[mask, "price"] = (__data.loc[mask, "price"] * 10).round(2)
+
+    mask = __data["unit"] == "ml"
+    __data.loc[mask, "unit"] = "l"
+    __data.loc[mask, "price"] = (__data.loc[mask, "price"] * 10).round(2)
+
+    mask = __data["unit"] == "cl"
+    __data.loc[mask, "unit"] = "l"
+    __data.loc[mask, "price"] = ((__data.loc[mask, "price"] / 75 ) * 100).round(2)
+
+    __data["tokens"] = [ word_tokenize(cleanWords(x)) for x in __data.name] #split up each name into tokens
+
+    phraser = Phraser(Phrases(__data.tokens, min_count=1, threshold=PHASER_THRESHOLD)) #groups together tokens into logical phrases
+    __data["phrases"] = [phraser[x] for x in __data.tokens]
+
+    __data["normalized_name"] = __data.phrases.apply(lambda x: ' '.join(x)) #convert the tokens back into strings but similar words are joined
+
+    __data["price_per_kilo"] = None
+    __data["price_per_litre"] = None
+    __data["price_per_each"] = None
+    kgData = __data.loc[__data.unit == "kg"].reset_index(drop=True)
+    lData  = __data.loc[__data.unit == "l"].reset_index(drop=True)
+    eData  = __data.loc[__data.unit == "each"].reset_index(drop=True)
+    kgData.price_per_kilo = kgData.price
+    lData.price_per_litre = lData.price
+    eData.price_per_each = eData.price
+
+    vectorizer = TfidfVectorizer(
+        max_df=MAX_DF
+    )
+    vectorizer.fit(__data.normalized_name)
+
+    kgVectorized = vectorizer.transform(kgData.normalized_name)
+
+    lVectorized = vectorizer.transform(lData.normalized_name)
+    eVectorized = vectorizer.transform(eData.normalized_name)
+
+    a = cosine_similarity(kgVectorized, lVectorized)
+    best_litre_idx = a.argmax(axis=1)
+
+    kgData["price_per_litre"] = [
+        lData.price.iloc[i] for i in best_litre_idx
+    ]
+
+    best_kg_idx = a.argmax(axis=0)
+
+    lData["price_per_kilo"] = [
+        kgData.price.iloc[i] for i in best_kg_idx
+    ]
+
+
+
+    b = cosine_similarity(kgVectorized, eVectorized)
+    best_e_idx = b.argmax(axis=1)
+
+    kgData["price_per_each"] = [
+        eData.price.iloc[i] for i in best_e_idx
+    ]
+
+    best_kg_idx = b.argmax(axis=0)
+
+    eData["price_per_kilo"] = [
+        kgData.price.iloc[i] for i in best_kg_idx
+    ]
+
+
+
+    c = cosine_similarity(lVectorized, eVectorized)
+    best_e_idx = c.argmax(axis=1)
+
+    lData["price_per_each"] = [
+        eData.price.iloc[i] for i in best_e_idx
+    ]
+
+    best_l_idx = c.argmax(axis=0)
+
+    eData["price_per_litre"] = [
+        lData.price.iloc[i] for i in best_l_idx
+    ]
+
+    newData = pd.concat([kgData, lData, eData], axis=0)
+    newData = newData.drop("price", axis=1)
+    newData = newData.drop("normalized_name", axis=1)
+    newData = newData.drop("phrases", axis=1)
+    newData = newData.drop("tokens", axis=1)
+
+    newData = newData.rename(columns={"unit": "original_unit"})
+    print(newData.head())
+    await append_optimizedPrices(newData.to_dict(orient="records"))
+
 async def testDf(actual_prices):
-    __data = pd.DataFrame(await getRandom1000()) #converts the list to a pandas dataframe
+    __data = pd.DataFrame(await get_db()) #converts the list to a pandas dataframe
     
     mask = __data["unit"] == "g" #converts g to kg
     __data.loc[mask, "unit"] = "kg"
@@ -136,7 +222,7 @@ async def testDf(actual_prices):
         print(f"df: {dfs[i]} score: {scores[i]}")
 
 async def testThreshold(actual_prices):
-    __data = pd.DataFrame(await getRandom1000()) #converts the list to a pandas dataframe
+    __data = pd.DataFrame(await get_db()) #converts the list to a pandas dataframe
     
     mask = __data["unit"] == "g" #converts g to kg
     __data.loc[mask, "unit"] = "kg"
@@ -193,21 +279,8 @@ async def testThreshold(actual_prices):
     for i in range(len(thresholds)):
         print(f"threshold: {thresholds[i]} score: {scores[i]}")
 
-async def main():
-    __data = pd.DataFrame(await getRandom1000()) #converts the list to a pandas dataframe
-    
-    #print(__data.head())
-    mask = __data["unit"] == "g" #converts g to kg
-    __data.loc[mask, "unit"] = "kg"
-    __data.loc[mask, "price"] = (__data.loc[mask, "price"] * 10).round(2)
-
-    mask = __data["unit"] == "ml"
-    __data.loc[mask, "unit"] = "l"
-    __data.loc[mask, "price"] = (__data.loc[mask, "price"] * 10).round(2)
-
-    mask = __data["unit"] == "cl"
-    __data.loc[mask, "unit"] = "l"
-    __data.loc[mask, "price"] = ((__data.loc[mask, "price"] / 75 ) * 100).round(2)
+async def saveDB():
+    __data = pd.DataFrame(await get_db()) #converts the list to a pandas dataframe
 
     #print(__data.head())
 
@@ -230,16 +303,43 @@ async def main():
     )
     X = vectorizer.fit_transform(__data.normalized_name) #generates a matrix of tokens representing where words are present
 
-    user_input = "penne pasta"
-    user_tokens = word_tokenize(cleanWords(user_input))
+    BASE_DIR = Path(__file__).resolve().parent
+    DATA_DIR = BASE_DIR / "data"
+
+
+    save_npz(DATA_DIR / "X.npz",X)
+    
+    with open(DATA_DIR / "vectorizer.pkl", "wb") as file:
+        pickle.dump(vectorizer, file)
+    
+    with open(DATA_DIR / "phraser.pkl", "wb") as file:
+        pickle.dump(phraser, file)
+
+async def loadData():
+    BASE_DIR = Path(__file__).resolve().parent
+    DATA_DIR = BASE_DIR / "data"
+
+    X = load_npz(DATA_DIR / "X.npz")
+
+    with open(DATA_DIR / "vectorizer.pkl", "rb") as file:
+        vectorizer = pickle.load(file)
+
+    with open(DATA_DIR / "phraser.pkl", "rb") as file:
+        phraser = pickle.load(file)
+
+    db_list = await get_db()
+    db = pd.DataFrame(db_list).drop(columns=["_id"])
+
+    return X, vectorizer, phraser, db
+
+
+async def searchItem(phraser, vectorizer, X, db, userInput):
+    user_tokens = word_tokenize(cleanWords(userInput))
     user_phrases = phraser[user_tokens]
     user_normalized = ' '.join(user_phrases)
-    query = vectorizer.transform([user_normalized]) #runs same processing that was ran on the database
+    query = vectorizer.transform([user_normalized])
 
-    __data['similarity'] = cosine_similarity(query, X).flatten()
-    top_match = __data.sort_values('similarity', ascending=False).iloc[0]
-    print(top_match)
-    
+    db['similarity'] = cosine_similarity(query, X).flatten()
+    predicted_item = db.sort_values('similarity', ascending=False).iloc[0]
 
-asyncio.run(main())
-#asyncio.run(testThreshold(actual_prices))
+    return predicted_item.drop("similarity")
