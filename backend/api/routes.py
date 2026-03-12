@@ -3,6 +3,7 @@ from ..db.mongo_client import get_price, insert_list, get_list, insert_item, rem
 from .schemas import Item, PriceResponse, ShoppingList, TokenResponse, LocalShoppingList
 from fastapi.middleware.cors import CORSMiddleware
 from ..db.prices.normalize_prices import loadData, searchItem
+from .log_prices import log_item
 
 api = FastAPI()
 
@@ -72,6 +73,7 @@ async def remove_item_from_list(token: str, item: Item):
 
 @api.post('/price', response_model=PriceResponse)
 async def get_item(item: Item):
+    log_item(item)
     if item.unit not in ["kg", "g", "ml", "cl", "l", "each"]:
         raise HTTPException(404, "Invalid unit given")
     result = await searchItem(userInput=item.name, vectorizer=init_data["vectorizer"], phraser=init_data["phraser"], X=init_data["X"], db=init_data["db"])

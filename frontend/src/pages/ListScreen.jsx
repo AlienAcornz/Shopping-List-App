@@ -58,31 +58,25 @@ function ListScreen({ lists, setLists }) {
     return unitMap[key] || null;
   }
 
-  // 2. Updated fetchPrices
-  const fetchPrices = async () => {
-    if (!list || !list.list || list.list.length === 0) return;
+  const fetchPrices = async (itemsToPrice) => {
+    if (!itemsToPrice || itemsToPrice.length === 0) return;
 
     try {
-      // Fetch all prices in parallel
       const responses = await Promise.all(
-        list.list.map((item) => {
+        itemsToPrice.map((item) => {
           const normalizedUnit = normalizeUnit(item.unit);
 
-          if (!normalizedUnit) {
-            console.warn("Unknown unit:", item.unit);
-            return null;
-          }
+          if (!normalizedUnit) return null;
 
           return getPrice(item.name, item.quantity, normalizedUnit);
         }),
       );
 
-      // Create updated items array safely
-      const updatedItems = list.list.map((item, index) => {
+      const updatedItems = itemsToPrice.map((item, index) => {
         const response = responses[index];
 
         if (!response || !response.price) {
-          return item; // Leave unchanged if API failed
+          return item;
         }
 
         return {
@@ -92,7 +86,6 @@ function ListScreen({ lists, setLists }) {
         };
       });
 
-      // Update state ONCE
       setLists((prevLists) =>
         prevLists.map((l) =>
           l.id === numericId ? { ...l, list: updatedItems } : l,
@@ -104,31 +97,33 @@ function ListScreen({ lists, setLists }) {
   };
 
   useEffect(() => {
-    fetchPrices();
+    if (list?.list?.length > 0) {
+      fetchPrices(list.list);
+    }
   }, []);
 
   function handleAddItem(e) {
-    const newItem = {
-      id: Date.now(), // Unique ID (fixes key error)
-      name: e.name,
-      quantity: parseInt(e.quantity),
-      unit: e.unit,
-      isCompleted: false,
-    };
+  const newItem = {
+    id: Date.now(),
+    name: e.name,
+    quantity: Math.abs(parseInt(e.quantity)),
+    unit: e.unit && e.unit !== "null" ? e.unit : null,
+    isCompleted: false,
+  };
 
-    setLists((prevLists) =>
-      prevLists.map((l) =>
-        l.id === numericId ? { ...l, list: [...l.list, newItem] } : l,
-      ),
-    );
+  const updatedList = list ? [...list.list, newItem] : [newItem];
 
-    setShowNewItem(false);
+  setLists((prevLists) =>
+    prevLists.map((l) =>
+      l.id === numericId ? { ...l, list: updatedList } : l
+    )
+  );
 
-    // Fetch prices AFTER adding
-    setTimeout(() => {
-      fetchPrices();
-    }, 0);
-  }
+  setShowNewItem(false);
+
+  // Fetch prices using the updated list directly
+  fetchPrices(updatedList);
+}
 
   const toggleHiddenItems = () => {
     setShowHiddenItems(!showHiddenItems);

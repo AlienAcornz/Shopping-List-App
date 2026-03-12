@@ -84,7 +84,7 @@ async def mergeUnits():
     __data["tokens"] = [ word_tokenize(cleanWords(x)) for x in __data.name] #split up each name into tokens
 
     phraser = Phraser(Phrases(__data.tokens, min_count=1, threshold=PHASER_THRESHOLD)) #groups together tokens into logical phrases
-    __data["phrases"] = [phraser[x] for x in __data.tokens]
+    __data["phrases"] = pd.Series([phraser[x] for x in __data.tokens])
 
     __data["normalized_name"] = __data.phrases.apply(lambda x: ' '.join(x)) #convert the tokens back into strings but similar words are joined
 
@@ -94,9 +94,9 @@ async def mergeUnits():
     kgData = __data.loc[__data.unit == "kg"].reset_index(drop=True)
     lData  = __data.loc[__data.unit == "l"].reset_index(drop=True)
     eData  = __data.loc[__data.unit == "each"].reset_index(drop=True)
-    kgData.price_per_kilo = kgData.price
-    lData.price_per_litre = lData.price
-    eData.price_per_each = eData.price
+    kgData["price_per_kilo"] = kgData.price
+    lData["price_per_litre"] = lData.price
+    eData["price_per_each"] = eData.price
 
     vectorizer = TfidfVectorizer(
         max_df=MAX_DF
@@ -179,7 +179,7 @@ async def testDf(actual_prices):
     __data["tokens"] = [ word_tokenize(cleanWords(x)) for x in __data.name] #split up each name into tokens
 
     phraser = Phraser(Phrases(__data.tokens, min_count=1, threshold=PHASER_THRESHOLD)) #groups together tokens into logical phrases
-    __data["phrases"] = [phraser[x] for x in __data.tokens]
+    __data["phrases"] = pd.Series([phraser[x] for x in __data.tokens])
 
     __data["normalized_name"] = __data.phrases.apply(lambda x: ' '.join(x)) #convert the tokens back into strings but similar words are joined
 
@@ -245,7 +245,7 @@ async def testThreshold(actual_prices):
     for threshold in thresholds:
         print(f"Testing threshold of {threshold}")
         phraser = Phraser(Phrases(__data.tokens, min_count=1, threshold=threshold)) #groups together tokens into logical phrases
-        __data["phrases"] = [phraser[x] for x in __data.tokens]
+        __data["phrases"] = pd.Series([phraser[x] for x in __data.tokens])
         __data["normalized_name"] = __data.phrases.apply(lambda x: ' '.join(x)) #convert the tokens back into strings but similar words are joined
 
         vectorizer = TfidfVectorizer(
@@ -289,7 +289,7 @@ async def saveDB():
 
     
     phraser = Phraser(Phrases(__data.tokens, min_count=1, threshold=PHASER_THRESHOLD)) #groups together tokens into logical phrases
-    __data["phrases"] = [phraser[x] for x in __data.tokens]
+    __data["phrases"] = pd.Series([phraser[x] for x in __data.tokens])
 
 
     

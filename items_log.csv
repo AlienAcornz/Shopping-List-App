@@ -1,0 +1,362 @@
+item_name,quantity,unit
+banana,1,l
+banana,1,l
+Eggs,6,each
+Eggs,6,each
+bars,10,each
+bars,10,each
+lettuce,1,each
+bars,10,each
+lettuce,1,each
+milk,1,l
+bars,10,each
+lettuce,1,each
+milk,1,l
+bars,10,each
+milk,1,l
+lettuce,1,each
+orange juice,1,l
+bars,10,each
+oranges,1,each
+orange juice,1,l
+lettuce,1,each
+milk,1,l
+bars,10,each
+porridge oats,500,g
+oranges,1,each
+lettuce,1,each
+orange juice,1,l
+milk,1,l
+bars,10,each
+lettuce,1,each
+ground coffee,1,kg
+milk,1,l
+orange juice,1,l
+oranges,1,each
+porridge oats,500,g
+banana,1,l
+banana,1,l
+Eggs,6,each
+Eggs,6,each
+banana,1,l
+Eggs,6,each
+banana,1,l
+Eggs,6,each
+banana,1,l
+Eggs,6,each
+eggs,3,kg
+banana,1,l
+Eggs,6,each
+banana,1,l
+Eggs,6,each
+Eggs,6,each
+banana,1,l
+Eggs,6,each
+apple,1,kg
+banana,1,l
+aiken,1,kg
+Rice,5,kg
+Sugar,2,kg
+Pasta,3,kg
+Olive Oil,2,l
+Tomato Sauce,4,each
+Flour,2,kg
+Pepper,1,each
+Tea Bags,100,each
+Coffee,1,kg
+Salt,1,kg
+Milk,4,l
+Yogurt,6,each
+Chicken Breast,3,kg
+Beef Mince,2,kg
+Fish Fillets,2,kg
+Butter,2,kg
+Frozen Chips,2,kg
+Cereal,3,each
+Oats,2,kg
+Honey,1,kg
+Frozen Vegetables,5,each
+Peanut Butter,1,kg
+Tuna Cans,10,each
+Beans,8,each
+Chickpeas,6,each
+Jam,2,each
+Crisps,5,each
+Chocolate,4,each
+Biscuits,6,each
+Apples,12,each
+Lentils,3,kg
+Grapes,2,kg
+Potatoes,5,kg
+Bananas,12,each
+Onions,3,kg
+Oranges,10,each
+Carrots,2,kg
+Broccoli,3,each
+Spinach,2,each
+Lettuce,2,each
+Garlic,5,each
+Cucumbers,4,each
+Peppers,6,each
+Mushrooms,2,kg
+Toilet Paper,24,each
+Tomatoes,8,each
+Soap,6,each
+Shampoo,2,each
+Conditioner,2,each
+Toothpaste,4,each
+Kitchen Roll,8,each
+Laundry Detergent,2,kg
+Fabric Softener,2,l
+Dish Soap,2,l
+Sponges,6,each
+Toothbrushes,4,each
+Aluminium Foil,1,each
+Cling Film,1,each
+Baking Paper,1,each
+Hand Sanitiser,2,each
+Bin Bags,30,each
+Plasters,1,each
+Painkillers,2,each
+Batteries,12,each
+Light Bulbs,4,each
+Vitamins,1,each
+Hand Soap,4,each
+Shower Gel,3,each
+Deodorant,2,each
+Shaving Foam,1,each
+Tissues,6,each
+Nappies,40,each
+Baby Wipes,5,each
+Cat Food,12,each
+Dog Food,12,each
+Razor Blades,8,each
+Dishwasher Tablets,40,each
+Bleach,2,l
+Surface Cleaner,2,l
+Spaghetti,3,kg
+Cat Litter,10,kg
+Quinoa,2,kg
+Tortillas,3,each
+Salsa,2,each
+Vinegar,1,l
+Couscous,2,kg
+Mustard,1,each
+Mayonnaise,1,each
+Ketchup,1,each
+Hot Sauce,1,each
+Soy Sauce,1,l
+Spices,10,each
+Stock Cubes,12,each
+Coconut Milk,4,each
+Curry Paste,2,each
+Herbs,6,each
+Energy Drinks,6,each
+Juice,4,l
+Water Bottles,12,each
+Rice,5,kg
+Noodles,6,each
+Tomato Sauce,4,each
+Olive Oil,2,l
+Flour,2,kg
+Sugar,2,kg
+Pasta,3,kg
+Pepper,1,each
+Tea Bags,100,each
+Coffee,1,kg
+Milk,4,l
+Salt,1,kg
+Yogurt,6,each
+Chicken Breast,3,kg
+Beef Mince,2,kg
+Fish Fillets,2,kg
+Butter,2,kg
+Frozen Chips,2,kg
+Cereal,3,each
+Oats,2,kg
+Honey,1,kg
+Frozen Vegetables,5,each
+Peanut Butter,1,kg
+Tuna Cans,10,each
+Beans,8,each
+Chickpeas,6,each
+Jam,2,each
+Crisps,5,each
+Chocolate,4,each
+Biscuits,6,each
+Apples,12,each
+Lentils,3,kg
+Grapes,2,kg
+Bananas,12,each
+Potatoes,5,kg
+Onions,3,kg
+Oranges,10,each
+Carrots,2,kg
+Broccoli,3,each
+Spinach,2,each
+Lettuce,2,each
+Garlic,5,each
+Cucumbers,4,each
+Peppers,6,each
+Mushrooms,2,kg
+Toilet Paper,24,each
+Tomatoes,8,each
+Soap,6,each
+Shampoo,2,each
+Conditioner,2,each
+Toothpaste,4,each
+Kitchen Roll,8,each
+Laundry Detergent,2,kg
+Fabric Softener,2,l
+Dish Soap,2,l
+Sponges,6,each
+Toothbrushes,4,each
+Aluminium Foil,1,each
+Cling Film,1,each
+Baking Paper,1,each
+Hand Sanitiser,2,each
+Bin Bags,30,each
+Vitamins,1,each
+Painkillers,2,each
+Light Bulbs,4,each
+Batteries,12,each
+Plasters,1,each
+Tissues,6,each
+Shower Gel,3,each
+Deodorant,2,each
+Shaving Foam,1,each
+Hand Soap,4,each
+Razor Blades,8,each
+Baby Wipes,5,each
+Cat Food,12,each
+Dog Food,12,each
+Nappies,40,each
+Cat Litter,10,kg
+Bleach,2,l
+Surface Cleaner,2,l
+Spaghetti,3,kg
+Dishwasher Tablets,40,each
+Couscous,2,kg
+Tortillas,3,each
+Salsa,2,each
+Soy Sauce,1,l
+Quinoa,2,kg
+Vinegar,1,l
+Mayonnaise,1,each
+Hot Sauce,1,each
+Ketchup,1,each
+Mustard,1,each
+Herbs,6,each
+Stock Cubes,12,each
+Coconut Milk,4,each
+Curry Paste,2,each
+Spices,10,each
+Noodles,6,each
+Juice,4,l
+Water Bottles,12,each
+Energy Drinks,6,each
+salt,300,g
+salt,300,g
+apple,1,kg
+salt,300,g
+salt,300,g
+apple,1,kg
+apple,1,kg
+salt,300,g
+salt,300,g
+flour,1,kg
+salt,300,g
+flour,1,kg
+salt,300,g
+flour,1,kg
+salt,300,g
+flour,1,kg
+salt,300,g
+flour,1,kg
+salt,300,g
+flour,1,kg
+tomatoes,0,g
+salt,300,g
+flour,1,kg
+tomatoes,0,g
+apples,-3,each
+salt,300,g
+rice,0,kg
+flour,1,kg
+apples,-3,each
+tomatoes,0,g
+flour,1,kg
+salt,300,g
+tomatoes,0,g
+apples,-3,each
+rice,0,kg
+nuts,200,g
+salt,300,g
+apples,-3,each
+rice,0,kg
+nuts,200,g
+flour,1,kg
+tomatoes,0,g
+ ,1,kg
+salt,300,g
+apples,-3,each
+rice,0,kg
+nuts,200,g
+tomatoes,0,g
+flour,1,kg
+ ,1,kg
+Milk ,1,kg
+salt,300,g
+flour,1,kg
+nuts,200,g
+rice,0,kg
+apples,-3,each
+tomatoes,0,g
+ ,1,kg
+🐵,1,kg
+Milk ,1,kg
+salt,300,g
+flour,1,kg
+tomatoes,0,g
+Milk ,1,kg
+apples,-3,each
+rice,0,kg
+ ,1,kg
+nuts,200,g
+🐵,1,kg
+DROP TABLE ITEMS;,1,kg
+salt,300,g
+apples,-3,each
+nuts,200,g
+rice,0,kg
+tomatoes,0,g
+ ,1,kg
+flour,1,kg
+DROP TABLE ITEMS;,1,kg
+carrots,500,g
+🐵,1,kg
+Milk ,1,kg
+salt,300,g
+flour,1,kg
+rice,0,kg
+ ,1,kg
+nuts,200,g
+tomatoes,0,g
+apples,-3,each
+Milk ,1,kg
+🐵,1,kg
+DROP TABLE ITEMS;,1,kg
+carrots,500,g
+chicken,1,kg
+salt,300,g
+flour,1,kg
+ ,1,kg
+Milk ,1,kg
+tomatoes,0,g
+apples,-3,each
+rice,0,kg
+nuts,200,g
+DROP TABLE ITEMS;,1,kg
+carrots,500,g
+chicken,1,kg
+🐵,1,kg

@@ -6,7 +6,17 @@ function ShoppingItemCard({ Item, onToggleCompleted }) {
     <div className="itemCard" onClick={() => onToggleCompleted(Item)}> 
       <div className="itemInfo">
         <input type="checkbox" checked={Item.isCompleted} onChange={(e) => e.stopPropagation()}/>
-        <p>{Item.name} • {Item.quantity} {Item.unit}</p>
+        {
+        isNaN(Item.quantity)
+          ? <p>{Item.name}</p>
+          : (
+              Item.unit
+                ? <p>{Item.name} • {Item.quantity} {Item.unit}</p>
+                : <p>{Item.name} • {Item.quantity}</p>
+            )
+      }
+
+        
       </div>
       {Item.price ? <p>£{Item.price.toFixed(2)}</p> : <p>----</p>}
     </div>
